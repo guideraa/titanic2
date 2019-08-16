@@ -81,35 +81,15 @@ def prediction():
     # Return the jsonify of the string which is a byte string (serialized json)
     return jsonify(return_value) # json object b' '{"result": [0, 1, 0, 0]}''
 
-@app.route('/predict', methods=['GET','POST'])
-def predict():
-    if lr:
-        try:
-
-            # Json datamanagement for prediction.  The model will predict 0 or 1 for "Survive" or "Not Survive" for the
-            # four test cases.
-            json_test_data = {"Age": [85, 24, 3, 21],
-                              "Sex": ["male", "female", "male", "male"],
-                              "Embarked": ["S", "C", "C", "S"]
-                             }
-            # Construct a DataFrame from the Json datamanagement
-            v1 = pd.DataFrame(data=json_test_data)
-            query = pd.get_dummies(v1)
-            query = query.reindex(columns=model_columns, fill_value=0)
-
-            prediction = list(lr.predict(query))
-
-            return jsonify({'prediction': str(prediction)})
-
-        except:
-
-            return jsonify({'trace': traceback.format_exc()})
-    else:
-        print ('Train the model first')
-        return ('No model here to use')
-
 
 if __name__ == '__main__':
+    """
+    In order to run this app from the command line:
+     1)  cd to the directory where app.py is located
+     2) Execute the command:  python app.py
+    """
+    print ("starting app........")
+
     app.secret_key = 'prunknurp'
     app.config['SESSION_TYPE'] = 'filesystem'
 
