@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Titanic2 Documentation</title>
+    <style>
+        body {background-color: powderblue;
+              font-family: Arial;
+              font-size: 12pt;
+              color: black;
+              }
+        h2   {text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Action Select Columns and Clean Data</h2>
+        <p>
+        <h3>Needs:</h3>
+        </p>
+        <p>
+            <ul>
+                <li>
+                    URL for data source.  This can be a web URL or a local file name
+                </li>
+                <li>
+                    All of the column names in the data source.
+                </li>
+            </ul>
+        </p>
+        <p>
+            <h3>Creates:</h3>
+        </p>
+        <p>
+            <ul>
+                <li>
+                    Selected columns.  User chooses which columns of the available columns will be included
+                    in the model.
+                </li>
+                <li>
+                    Once the user has selected the columns to use in the model, those columns are serialized and
+                    stored in a file called "included_columns.pkl"
+                </li>
+                <li>
+                    Once the DataFrame for the model is created with One Hot Encoding (OHE), the column names
+                    are serialized and stored in a file called "model_columns.pkl".
+                </li>
+                <li>
+                    DataFrame with specified included columns together with One Hot Encoded (OHE) columns for any
+                    non numerical columns.  Therefore with OHE, all columns in the model are numeric.
+                    Also, missing values in the DataFrame are replaced with zeros.
+                </li>
+
+            </ul>
+        </p>
+        <p>
+            <h2>Action Build and Train Model</h2>
+        </p>
+        <p>
+            <h3>Needs:</h3>
+        </p>
+        <p>
+            <ul>
+                <li>
+                    A OHE pandas DataFrame that has been cleaned.
+                </li>
+                <li>
+                    Name of data column that will be the model's label (string).
+                </li>
+            </ul>
+        </p>
+        <p>
+            <h3>Creates:</h3>
+        </p>
+        <p>
+            <ul>
+                <li>
+                    Trained model:  sklearn.linear_model.LogisticRegression Object
+                </li>
+                <li>
+                    List (strings) of model features
+                </li>
+            </ul>
+        </p>
+        <p>
+            <h2>Action Make Prediction</h2>
+        </p>
+        <p>
+            <h3>Needs:  </h3>
+        </p>
+        <p>
+            <ul>
+                <li>
+                    Trained model: sklearn.linear_model.LogisticRegression Object
+                </li>
+                <li>
+                    Test data in dictionary form
+                </li>
+            </ul>
+        </p>
+        <p>
+            <h3>Creates:</h3>
+        </p>
+        <p>
+            Prediction as an ndarray
+        </p>
+
+    </div>
+</body>
+</html>

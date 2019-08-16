@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.1.6.3 (MacOSX)"/>
+	<meta name="created" content="2019-08-13T14:48:49.857358787"/>
+	<meta name="changed" content="2019-08-14T08:51:32.837755081"/>
+</head>
+<body lang="en-US" bgcolor="#eeeeee" dir="ltr"><p align="center" style="background: #eeeeee">
+<font size="7" style="font-size: 32pt">Web Application Using Flask
+Framework</font></p>
+<p align="left" style="background: #eeeeee"><br/>
+<br/>
+
+</p>
+<p align="left" style="background: #eeeeee"><br/>
+<br/>
+
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">This
+project demonstrates how a Data Science module written in Python can
+be placed into a web application context with a usable User Interface
+(UI). The main point of the project is a proof of concept that a Data
+Scientist can build a model ( In this case a machine learning model)
+using Python without having to worry about the web application
+context in which it is used. Furthermore it is shown that when
+written properly, a model can be used within any web application
+context, that is, the model is completely independent from the web
+framework in which it is used. This means that the Python model can
+function not just in the Flask framework, but can also be used
+directly in Django, or front ends built with AngularJS, Dash, etc.</font></p>
+<p align="left" style="background: #eeeeee"><img src="images/architect1.png" name="Image1" align="right" width="637" height="825" border="0"/>
+<font size="5" style="font-size: 18pt">Before
+getting into details of the web application, let’s look at the
+overall architecture that we will be using. </font>
+</p>
+<p align="right" style="background: #eeeeee"><br/>
+<br/>
+
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">The
+figure on the right depicts how the demo web application is built.
+There are four components or modules that make up the application.
+The two blue modules represent the code that the Data Scientist would
+write. The red and green modules would be written by a specialist in
+UI design with a knowledge of the web framework that is being used. </font>
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Let’s
+look at the blue modules first. The module with the label “<b>Data
+Access</b>” represents the Python code that would allow for the
+following:</font></p>
+<ul>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Read
+	the data from either a CSV or Database source</font></p>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Specify
+	the features and labels in the training data</font></p>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Clean
+	the data by handling missing values and type mismatches</font></p>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Use
+	One Hot Encoding to handle columns that contain non-numeric values</font></p>
+</ul>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">The
+module labeled “DS Model” allows for the following:</font></p>
+<ul>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Building
+	the model</font></p>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Training
+	the model with the training data.</font></p>
+	<li><p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Predict
+	label values based on user supplied data</font></p>
+</ul>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">If
+we were to inspect the code of these two modules, we would find that
+there are no dependencies other than Python libraries. In fact, here
+is a code snippet of the DS Model:</font></p>
+<p align="left" style="background: #eeeeee"><img src="images/snipdsmodule.png" name="Image2" align="left" width="1117" height="290">
+  <br clear="left"/>
+</img>
+<br/>
+<br/>
+
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Notice
+that the imports at the top of the snippet only include Python
+libraries. There is no inclusion of Flask (The web framework
+library), nor are there inclusions of any other libraries. In
+software engineering terms, we say that the DS Model module is
+completely </font><font size="5" style="font-size: 18pt"><i><u><b>decoupled</b></u></i></font>
+<font size="5" style="font-size: 18pt">from the other modules in the
+application. That is, we can say that the DS Model has no other
+dependencies other than Python libraries. The decoupled property of
+the DS Model module means that this module can be used in any context
+without worry that it would not have available its supporting
+libraries. </font>
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Let’s
+look at a code snippet from the Data Access module:</font></p>
+<p align="left" style="background: #eeeeee"><img src="images/snipdatamgr.png" name="Image3" align="left" width="1119" height="246">
+  <br clear="left"/>
+</img>
+<br/>
+<br/>
+
+</p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">Again,
+no dependencies other than Python libraries. Then we can also declare
+that the Data Access module is </font><font size="5" style="font-size: 18pt"><i><u><b>decoupled</b></u></i></font>
+<font size="5" style="font-size: 18pt">from the other modules in the
+application.</font></p>
+<p align="left" style="background: #eeeeee"><font size="5" style="font-size: 18pt">The
+concept of decoupling is great for software design, but more
+importantly, it is also important for the Data Scientist. </font>
+</p>
+<p align="left" style="background: #eeeeee"><font color="#0066b3"><font size="5" style="font-size: 18pt"><i>Decoupling
+means that the Data Scientist can write the DS model and Access
+modules without having to worry about the context in which they are
+used. That is, the Data Scientist can just continue to write her/his
+code as before with only minor adjustments. </i></font></font>
+</p>
+<p align="right" style="background: #eeeeee"><a href="projectoverviewpage2.html"><font size="5" style="font-size: 18pt"><i>Next
+Page&gt;</i></font></a></p>
+<p align="left" style="background: #eeeeee"><br/>
+<br/>
+
+</p>
+</body>
+</html>

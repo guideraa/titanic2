@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--<link rel="stylesheet" type="text/css" href="../static/titanic_style.css"/>-->
+    <meta charset="UTF-8">
+    <title>Titanic</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='titanic_style.css') }}">
+</head>
+
+<body>
+
+    <div id="mainDiv" name="mainDiv" class="mainDiv">
+
+        <div>
+            <h1>Titanic Survival Predictor</h1>
+        </div>
+        <div id="msgDiv" name="msgDiv" class="msgDiv">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div>
+            <form action="{{url_for('action_controller')}}" id="mainForm" method="post">
+                <input type="file" style="display: none" id="hidden_file_input"/>
+                <input type="hidden" id="test_data" name="test_data">
+
+                <div class="border_div">
+                    <div>
+                        <p style="font-weight: bold; font-size: 18pt;text-align: left;"> Select action:</p>
+                    </div>
+                    <p style="text-align: left;">
+                        <input type="radio" name="actionradio" id="radioaction1" value="1" onclick="selectClean();">Select Columns and Clean Data <br>
+                        <input type="radio" name="actionradio" id="radioaction2" value="2" onclick="buildTrain();">Build and Train Model<br>
+                        <input type="radio" name="actionradio" id="radioaction3" value="3" onclick="predict();">Make Prediction</p><br>
+
+                    </p>
+                    <p>
+                        <input type="button" value="Do Selected Action" id="actionBtn" name="actionBtn" style="display: none;"
+                               onclick="doSelectedAction();"/>
+                    </p>
+                    <p>
+                        <input type="button" value="Do Prediction" id="predictionBtn" name="predictionBtn" style="display: none;"
+                               onclick="doPredictionAction1();"/>
+                    </p>
+                </div>
+
+
+                <div class="border_div" id="div_selection_container" style="width: 350px;display: none;">
+                    <div id="div_available_columns" style="float: left; width: 40%; ">
+                        <label for="all_columns" style="display: block;">Available Columns</label>
+                        <select name="all_columns" id="all_columns" size="10" style="display: block;">
+                            {% for col in all_columns_option_list %}
+                                <option name="{{col}}" >{{col}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="div_btns_selected_columns" style="float: left; vertical-align: middle; margin-top: 50px; width: 20%; display: none;">
+                        <input type="button" value="--&gt" style="align: center; vertical-align: middle; display: block;"
+                            onclick="moveOptions(this.form.all_columns, this.form.selected_columns, true);">
+                        <input type="button" value="&lt--" style="align: center; vertical-align: middle; display: block;"
+                            onclick="moveOptions(this.form.selected_columns, this.form.all_columns, true);">
+                    </div>
+                    <div id="div_btn_dependent_var" style="float: left; vertical-align: middle; margin-top: 50px; width: 20%;display: none;">
+                        <input type="button" value="--&gt" style="align:center; vertical-align: middle; display: block;"
+                           onclick="checkDepVariableList(this.form.all_columns, this.form.dependent_var);">
+                        <input type="button" value="&lt--" style="align: center; vartical-align: middle; display: block;"
+                           onclick="moveOptions(this.form.dependent_var, this.form.all_columns, true)">
+                    </div>
+                    <div id="div_dependent_var" style="float: left; width: 40%; display: none">
+                        <label for="dependent_var" style="display: block;">Dependent Variable</label>
+                        <select id="dependent_var" name="dependent_var" style="display: block; width: 100px;"
+                                size="2">
+                                {% if dependent_var_option != None %}
+                                {% for col in dependent_var_option %}
+                                    <option name="{{col}}" >{{col}}</option>
+                                {% endfor %}
+                            {% endif %}}
+                        </select>
+                    </div>
+                    <div id="div_selected_columns" style="float: left; width: 40%; display: none;">
+                        <label for="selected_columns" style="display: block;">Selected Columns</label>
+                        <select name="selected_columns" id="selected_columns"
+                                multiple="multiple" size="10" style="display: block; width: 100px;">
+                            {% if selected_columns_option_list != None %}
+                                {% for col in selected_columns_option_list %}
+                                    <option name="{{col}}" >{{col}}</option>
+                                {% endfor %}
+                            {% endif %}}
+                        </select>
+                    </div>
+
+
+                    <br style="clear:both;"/>
+                </div>
+                <div class="textDiv" id="predict_div" style="display: none;">
+                    <textarea class="textArea" id="prediction_txt" name="prediction_txt" style="width: 400px; height: 60px;">
+                    </textarea>
+                </div>
+                <div class="border_div" id="results_div" name="results_div" style="display: none;">
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script src="static/two_selects.js" charset="utf-8"></script>
+    <script src="static/ajax_predict.js" charset="utf-8"></script>
+    <script>
+        const tagReferences = {
+            availColsObj:           document.getElementById("all_columns"),
+            textareaObj:            document.getElementById("prediction_txt"), // Contains prediction data
+            outputdivObj:           document.getElementById("results_div"), // Container div to dump output table
+            formObj:                document.getElementById('mainForm'),
+            divContainerObj:        document.getElementById('div_selection_container'),
+            divBtnsSelColsObj:      document.getElementById('div_btns_selected_columns'),
+            divBtnDepVarObj:        document.getElementById('div_btn_dependent_var'),
+            divDepVarObj:           document.getElementById('div_dependent_var'),
+            divSelectedColsObj:     document.getElementById('div_selected_columns'),
+            depVarSelectObj:        document.getElementById("dependent_var"),
+            selectedColumnsObj:     document.getElementById("selected_columns"),
+            predictDivObj:          document.getElementById("predict_div"),
+            predictionTextareaObj:  document.getElementById("prediction_txt"),
+            actionBtnObj:           document.getElementById("actionBtn"),
+            predictionBtnObj:       document.getElementById("predictionBtn"),
+            radio1Obj:              document.getElementById('radioaction1'),
+            radio2Obj:              document.getElementById('radioaction2'),
+            radio3Obj:              document.getElementById('radioaction3'),
+            hiddenFileInputObj:     document.getElementById("hidden_file_input"),
+            msgDivObj:              document.getElementById("msgDiv")
+        };
+
+        tagReferences.radio3Obj.addEventListener("click", function () {
+            //tagReferences.hiddenFileInputObj.trigger("click");
+            tagReferences.hiddenFileInputObj.click();
+            tagReferences.radio1Obj.checked = false;
+            tagReferences.radio2Obj.checked = false;
+            tagReferences.radio3Obj.checked = true;
+        });
+        function handleFileSelect(evt) {
+            var content;
+            var file = evt.target.files[0];
+            var output=[];
+            var reader = new FileReader();
+           reader.readAsText(file,'UTF-8');
+           reader.onload = readerEvent => {
+              content = readerEvent.target.result; // this is the content!
+               tagReferences.predictionTextareaObj.innerText = content;
+               tagReferences.predictDivObj.style.display = "block";
+               tagReferences.predictionBtnObj.style.display = "block";
+
+           }
+        }
+        tagReferences.hiddenFileInputObj.addEventListener('change', handleFileSelect, false);
+
+    </script>
+
+    <script>
+    /*
+        Handles submits generated by the "Do Selected Action" button.  The status of the radio buttons, radio1 and radio2
+        determine the particular action.
+     */
+    function doSelectedAction() {
+
+        var actionNumber;
+        if(tagReferences.radio1Obj.checked) {
+            if (tagReferences.selectedColumnsObj.length == 0) {
+                alert("No columns have been selected");
+                return;
+            }
+            // Select all options in selected_columns so they will all be posted
+            for (let i = 0; i < tagReferences.selectedColumnsObj.length; i++){
+                tagReferences.selectedColumnsObj.options[i].selected = true;
+            }
+            tagReferences.formObj.submit();
+        }else if(tagReferences.radio2Obj.checked){
+            actionNumber = tagReferences.radio2Obj.value;
+
+            if(tagReferences.depVarSelectObj.length == 1) {
+                tagReferences.depVarSelectObj.options[0].selected = true;
+                tagReferences.formObj.submit();
+            }else{
+                alert("Dependent Variable must be selected");
+            }
+
+        }else if(tagReferences.radio3Obj.checked){
+            console.log("radio3 checked");
+            // No submit is made when radio3 is clicked.  Instead, an ajax call is made when the 'Do Prediction' button
+            // is pressed
+
+
+        }
+    }
+    // Display and hide widgets for "Select Columns and Clean Data" action configuration
+    function selectClean(){
+        tagReferences.actionBtnObj.style.display = "block";
+        tagReferences.divContainerObj.style.display = "block";
+        tagReferences.divBtnsSelColsObj.style.display = "block";
+        tagReferences.divSelectedColsObj.style.display = "block";
+        tagReferences.divBtnDepVarObj.style.display = "none";
+        tagReferences.divDepVarObj.style.display = "none";
+        tagReferences.predictDivObj.style.display = "none";
+        tagReferences.outputdivObj.style.display = "none";
+        tagReferences.predictionBtnObj.style.display = "none";
+        tagReferences.msgDivObj.innerHTML = "";
+    }
+    // Display and hide widgets for "Build and Train Model" action configuration
+    function buildTrain(){
+        tagReferences.actionBtnObj.style.display = "block";
+        tagReferences.divContainerObj.style.display = "block";
+        tagReferences.divBtnsSelColsObj.style.display = "none";
+        tagReferences.divSelectedColsObj.style.display = "none";
+        tagReferences.divBtnDepVarObj.style.display = "block";
+        tagReferences.divDepVarObj.style.display = "block";
+        tagReferences.predictDivObj.style.display = "none";
+        tagReferences.outputdivObj.style.display = "none";
+        tagReferences.predictionBtnObj.style.display = "none";
+        tagReferences.msgDivObj.innerHTML = "";
+    }
+    /*
+        Make sure only one dependent variable is allowed in the select.
+     */
+    function checkDepVariableList(fromObj, toObj){
+        if (toObj.length > 0){
+            alert("Can only choose one dependent variable ");
+        }else{
+            moveOptions(fromObj, toObj, true);
+        }
+
+    }
+    /*
+        Hide the selects div and show the text area with test data, show the "Do Prediction" button.
+     */
+    function predict(){
+        tagReferences.actionBtnObj.style.display = "none";
+        tagReferences.divContainerObj.style.display = "none";
+        tagReferences.divBtnsSelColsObj.style.display = "none";
+        tagReferences.divSelectedColsObj.style.display = "none";
+        tagReferences.divBtnDepVarObj.style.display = "none";
+        tagReferences.divDepVarObj.style.display = "none";
+        tagReferences.msgDivObj.innerHTML = "";
+
+    }
+</script>
+
+</body>
+</html>

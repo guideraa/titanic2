@@ -1,0 +1,4 @@
+{"Age": [85, 24, 3, 21],
+"Sex": ["male", "female", "male", "male"],
+"Embarked": ["S", "C", "C", "S"]
+}
