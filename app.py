@@ -1,12 +1,8 @@
-import os
-
-from flask import Flask, request, jsonify, render_template, url_for, redirect, session, json, flash
-from sklearn.externals import joblib
+from flask import Flask, render_template, url_for, redirect
 
 from titanic.actions.application_initialize import InitApplicationManager
 from titanic.actions.prediction_action import PredictionController
 from titanic.actions.submit_actions import SubmitController
-from titanic.models.model import LogisticRegressionModel
 
 # Your API definition
 app = Flask(__name__)
