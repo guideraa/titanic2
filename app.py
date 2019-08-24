@@ -39,7 +39,7 @@ def action_controller():
 @app.route('/prediction', methods=['GET','POST'])
 def prediction():
     """
-    Note there is no call to render_template() of redirect() because /prediction is an asynchronous call to the server
+    Note there is no call to render_template() or redirect() because /prediction is an asynchronous call to the server
     where client side javascript captures this return value and builds HTML that is rendered on the client's web page.
     :return: # json serialized object.  For example:   b' '{"result": [0, 1, 0, 0]}''
     """
