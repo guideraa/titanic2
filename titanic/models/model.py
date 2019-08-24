@@ -37,10 +37,12 @@ class LogisticRegressionModel():
         :return: prediction values ( 0 or 1 )
         :rtype: ndarray
         """
-
-        v1 = pd.DataFrame(json_test_data)
-        query = pd.get_dummies(v1)
-        query = query.reindex(columns=model_columns, fill_value=0)
+        # Convert the json data (dictionary) into a pandas DataFrame
+        test_dataframe = pd.DataFrame(json_test_data)  # DataFrame
+        # OHE the category columns in the test data
+        ohe_dataframe = pd.get_dummies(test_dataframe) # DataFrame
+        # Make sure that all the columns in the model are included in the test data.
+        query = ohe_dataframe.reindex(columns=model_columns, fill_value=0)
         prediction = self.lr_model.predict(query)  # ndarray, not list
 
         return prediction
