@@ -42,7 +42,8 @@ class SubmitController():
 
     def select_columns(self):
         """
-        Get a list of the user selected columns from the UI and return them
+        Get a list of the user selected columns from the UI and return them. Also store the OHE version of the
+        DataFrame.
         :return: A list of all columns(string) in the dataframe, a list of all column(string) to be included in model
         """
         included_columns = request.form.getlist('selected_columns') # list of str
