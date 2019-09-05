@@ -27,7 +27,7 @@ class SubmitController():
                 dependent_variable = request.form.get('dependent_var')
                 session['session_dependent_variable'] = dependent_variable
                 joblib.dump(dependent_variable, 'titanic/serialized/dependent_var.pkl')
-                retval, model = self.build_train_model(dependent_variable)
+                retval = self.build_train_model(dependent_variable)
                 if retval:
                     flash("Model was successfully built and trained")
                 else:
@@ -44,7 +44,6 @@ class SubmitController():
         """
         Get a list of the user selected columns from the UI and return them. Also store the OHE version of the
         DataFrame.
-        :return: A list of all columns(string) in the dataframe, a list of all column(string) to be included in model
         """
         included_columns = request.form.getlist('selected_columns') # list of str
 
@@ -55,8 +54,7 @@ class SubmitController():
         dataframe_ohe = data_manager.get_df_ohe()
         # Note:  we do not put a dataframe into the session.  It is much too large. Store in .pkl file
         joblib.dump(dataframe_ohe, 'titanic/serialized/df_ohe.pkl')
-
-        return all_columns, included_columns  # Both are lists of string
+        return
 
 
     def build_train_model(self, dependent_variable):
@@ -64,18 +62,17 @@ class SubmitController():
         Build and train model. Use DataFrame OHE if it is found in .pkl file.  Once the model has been trained,
         write it to a .pkl file.  If no DataFrame OHE is found, return error message.
         :param dependent_variable: string name of label column
-        :return: Two values:  bool(), and LogisticRegression object that has been trained.
-            If first returned object is True, second object will be LogisticRegression object.  If first returned object
-            is False, second object will be a string error message.
+        :return: bool()  False if no df_ohe.pkl is found, True otherwise
+
         """
         dataframe_ohe = None
         if os.path.isfile('titanic/serialized/df_ohe.pkl'):
             dataframe_ohe = joblib.load('titanic/serialized/df_ohe.pkl') # DataFrame that is OHE
         else:
-            return bool(False), "No OHE DataFrame has been created"
+            return bool(False)
         lr_model_object = LogisticRegressionModel(dataframe_ohe, dependent_variable) # LogisticRegressionModel object
         lr_model, model_cols = lr_model_object.build_model() # LogisticRegression object, list of str
         # Serialize model and model columns (includes ohe columns)
         joblib.dump(lr_model, "titanic/serialized/model.pkl")
         joblib.dump(model_cols, "titanic/serialized/model_columns.pkl")
-        return bool(True), lr_model # bool designating success, LogisticRegression object
+        return bool(True) # bool designating success
