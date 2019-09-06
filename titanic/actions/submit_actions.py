@@ -42,12 +42,11 @@ class SubmitController():
 
     def select_columns(self):
         """
-        Get a list of the user selected columns from the UI and return them. Also store the OHE version of the
-        DataFrame.
+        Get a list of the user selected columns from the UI and put them into the
+        session as a list.
+        Also store the OHE version of the DataFrame.
         """
         included_columns = request.form.getlist('selected_columns') # list of str
-
-        all_columns = session['session_all_columns'] # list of str
         data_manager = DataManager()
         data_manager.set_included_columns(included_columns)
         session['selected_columns'] = included_columns
