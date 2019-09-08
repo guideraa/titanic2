@@ -1,6 +1,6 @@
 
     function doPredictionAction1(){
-            let predictionData = tagReferences.textareaObj.value;
+            let predictionData = tagReferences.textareaObj.value;  // Text area where test data is displayed
             postRequest('/prediction', predictionData)
                 .then(responseData => formatAndDisplayHTML(responseData, predictionData))
               .catch(error => console.error(error))
@@ -17,8 +17,8 @@
      */
     function postRequest(url, requestData) {
           return fetch(url, {
-            method: 'POST', // 'GET', 'PUT', 'DELETE', etc.
-            body: requestData, // Coordinate the body type with 'Content-Type'
+            method: 'POST',
+            body: requestData,
             headers: new Headers({
               'Content-Type': 'application/json'
             }),
