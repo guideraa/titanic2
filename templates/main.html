@@ -135,20 +135,18 @@
         };
 
         tagReferences.radio3Obj.addEventListener("click", function () {
-            //tagReferences.hiddenFileInputObj.trigger("click");
-            tagReferences.hiddenFileInputObj.click();
-            tagReferences.radio1Obj.checked = false;
-            tagReferences.radio2Obj.checked = false;
-            tagReferences.radio3Obj.checked = true;
+        tagReferences.hiddenFileInputObj.click();
+        tagReferences.radio1Obj.checked = false;
+        tagReferences.radio2Obj.checked = false;
+        tagReferences.radio3Obj.checked = true;
         });
         function handleFileSelect(evt) {
             var content;
-            var file = evt.target.files[0];
-            var output=[];
+            var file = evt.target.files[0]
             var reader = new FileReader();
            reader.readAsText(file,'UTF-8');
            reader.onload = readerEvent => {
-              content = readerEvent.target.result; // this is the content!
+              content = readerEvent.target.result; // text content of chosen file
                tagReferences.predictionTextareaObj.innerText = content;
                tagReferences.predictDivObj.style.display = "block";
                tagReferences.predictionBtnObj.style.display = "block";
