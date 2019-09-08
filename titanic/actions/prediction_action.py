@@ -11,12 +11,9 @@ class PredictionController:
     @staticmethod
     def predict():
         json_test_data = request.get_data()
-        print("Serialized json object: {}".format(json_test_data))
         # Convert json serialized object to a Python dictionary object
         json_dict_obj = json.loads(json_test_data)  # dict object
         # Get the serialized model
-        lr_model = None
-        model_columns = None
         if os.path.isfile('titanic/serialized/model.pkl'):
             lr_model = joblib.load("titanic/serialized/model.pkl")
         else:
@@ -31,7 +28,7 @@ class PredictionController:
         lr_model_obj.setModel(lr_model)
 
         list_results = lr_model_obj.predict_with_data(json_dict_obj,
-                                                      model_columns)  # ndarray [0, 1, 0, 0] this is the prediction made by the model
+                model_columns)  # ndarray [0, 1, 0, 0] this is the prediction made by the model
         # Convert ndarray to list:
         list_results_aslist = list_results.tolist()
 
