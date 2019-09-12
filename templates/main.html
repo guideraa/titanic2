@@ -144,7 +144,6 @@
             var content;
             var file = evt.target.files[0]
             var reader = new FileReader();
-           reader.readAsText(file,'UTF-8');
            reader.onload = readerEvent => {
               content = readerEvent.target.result; // text content of chosen file
                tagReferences.predictionTextareaObj.innerText = content;
@@ -152,6 +151,7 @@
                tagReferences.predictionBtnObj.style.display = "block";
 
            }
+           reader.readAsText(file,'UTF-8');
         }
         tagReferences.hiddenFileInputObj.addEventListener('change', handleFileSelect, false);
 
