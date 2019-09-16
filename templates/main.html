@@ -144,8 +144,8 @@
             var content;
             var file = evt.target.files[0]
             var reader = new FileReader();
-           reader.onload = readerEvent => {
-              content = readerEvent.target.result; // text content of chosen file
+            reader.onload = () => {
+                content = reader.result;
                tagReferences.predictionTextareaObj.innerText = content;
                tagReferences.predictDivObj.style.display = "block";
                tagReferences.predictionBtnObj.style.display = "block";
